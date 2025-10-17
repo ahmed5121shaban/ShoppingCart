@@ -1,16 +1,22 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-
-namespace ShoppingCart.Controllers.ShoppingCart
+using Contracts;
+using Domains;
+namespace Controllers
 {
-    [Route("/")] // instead of ( api/[controller] )
+    [Route("/shoppingcart")]
     [ApiController]
     public class ShoppingCartController : ControllerBase
     {
-        [HttpGet]
-        public IActionResult HealthCheck()
+        private readonly IShoppingCartStore _shoppingCartStore;
+        public ShoppingCartController(IShoppingCartStore shoppingCartStore) 
         {
-            return Ok("Hello World!");
+            _shoppingCartStore = shoppingCartStore;
         }
+        
+        [HttpGet("{userId:int}")]
+        public ShoppingCart GetShoppingCart(int userId)
+        => _shoppingCartStore.Get(userId);
+            
     }
 }
