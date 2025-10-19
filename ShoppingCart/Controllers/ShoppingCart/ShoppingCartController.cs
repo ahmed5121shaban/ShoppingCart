@@ -27,5 +27,14 @@ namespace Controllers
             shoppingCart.AddItems(shoppingCartItems, eventStore);
             return shoppingCart;
         }
+
+        [HttpDelete("{userid:int}/items")]
+        public ShoppingCart Delete( int userId,[FromBody] int[] productIds)
+        {
+            var shoppingCart = _shoppingCartStore.Get(userId);
+            shoppingCart.RemoveItems( productIds,this.eventStore);
+            _shoppingCartStore.Save(shoppingCart);
+            return shoppingCart;
+        }
     }
 }
