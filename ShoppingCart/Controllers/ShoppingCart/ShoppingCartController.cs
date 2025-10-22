@@ -11,10 +11,12 @@ namespace Controllers
     {
         private readonly IShoppingCartStore _shoppingCartStore;
         private readonly IProductCatalogClient _productcatalogClient;
-        public ShoppingCartController(IShoppingCartStore shoppingCartStore, IProductCatalogClient productcatalogClient)
+        private readonly IEventStore _eventStore;
+        public ShoppingCartController(IShoppingCartStore shoppingCartStore, IProductCatalogClient productcatalogClient, IEventStore eventStore)
         {
             _shoppingCartStore = shoppingCartStore;
             _productcatalogClient = productcatalogClient;
+            _eventStore = eventStore;
         }
 
         [HttpGet("{userId:int}")]
@@ -26,7 +28,7 @@ namespace Controllers
         {
             var shoppingCart = _shoppingCartStore.Get(userId);
             var shoppingCartItems = await _productcatalogClient.GetShoppingCrtItems(productIds);
-            shoppingCart.AddItems(shoppingCartItems, eventStore);
+            shoppingCart.AddItems(shoppingCartItems, _eventStore);
             return shoppingCart;
         }
 
@@ -34,7 +36,7 @@ namespace Controllers
         public ShoppingCart Delete( int userId,[FromBody] int[] productIds)
         {
             var shoppingCart = _shoppingCartStore.Get(userId);
-            shoppingCart.RemoveItems( productIds,this.eventStore);
+            shoppingCart.RemoveItems( productIds, _eventStore);
             _shoppingCartStore.Save(shoppingCart);
             return shoppingCart;
         }
