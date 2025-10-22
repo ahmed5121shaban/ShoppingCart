@@ -10,11 +10,13 @@ namespace Controllers
     public class ShoppingCartController : ControllerBase
     {
         private readonly IShoppingCartStore _shoppingCartStore;
-        public ShoppingCartController(IShoppingCartStore shoppingCartStore) 
+        private readonly IProductCatalogClient _productcatalogClient;
+        public ShoppingCartController(IShoppingCartStore shoppingCartStore, IProductCatalogClient productcatalogClient)
         {
             _shoppingCartStore = shoppingCartStore;
+            _productcatalogClient = productcatalogClient;
         }
-        
+
         [HttpGet("{userId:int}")]
         public ShoppingCart GetShoppingCart(int userId)
         => _shoppingCartStore.Get(userId);
@@ -23,7 +25,7 @@ namespace Controllers
         public async Task<ShoppingCart> Post(int userId, [FromBody] int[] productIds)
         {
             var shoppingCart = _shoppingCartStore.Get(userId);
-            var shoppingCartItems = await this.productcatalogClient.GetShoppingCartItems(productIds);
+            var shoppingCartItems = await _productcatalogClient.GetShoppingCrtItems(productIds);
             shoppingCart.AddItems(shoppingCartItems, eventStore);
             return shoppingCart;
         }
