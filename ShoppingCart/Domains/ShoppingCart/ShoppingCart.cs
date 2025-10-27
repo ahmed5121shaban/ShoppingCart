@@ -15,13 +15,13 @@ namespace Domains
             _eventStore = new EventStore();
         }
 
-        public void AddItems(IEnumerable<ShoppingCartItem> shoppingCartItems)
+        public void AddItems(IEnumerable<ShoppingCartItem> shoppingCartItems,IEventStore eventStore)
         {
             foreach (var item in shoppingCartItems)
                 if (items.Add(item))
                     _eventStore.Raise("ShoppingCartItemAdded", new { UserId, item });
         }
-        public void RemoveItems(int[] productCatalogueIds) =>
+        public void RemoveItems(int[] productCatalogueIds, IEventStore eventStore) =>
             items.RemoveWhere( i => productCatalogueIds.Contains(i.ProductCatalogueId) );
     }
 

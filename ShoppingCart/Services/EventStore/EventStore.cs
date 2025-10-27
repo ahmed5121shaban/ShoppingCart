@@ -6,9 +6,9 @@ namespace Services
     public class EventStore : IEventStore
     {
         public IEnumerable<Event> GetEvents(long firstEventSequenceNumber, long lastEventSequenceNumber)
-        {
-            throw new NotImplementedException();
-        }
+        => database.Where(e =>
+            e.SequenceNumber >= firstEventSequenceNumber && e.SequenceNumber <= lastEventSequenceNumber
+            ).OrderBy(e => e.SequenceNumber);
 
         public void Raise(string eventName, object content)
         {
