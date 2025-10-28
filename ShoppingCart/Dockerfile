@@ -8,5 +8,6 @@ FROM build AS publish
 RUN dotnet publish "ShoppingCart/ShoppingCart.csproj" -c Release -o /app/publish /p:UseAppHost=false
 FROM mcr.microsoft.com/dotnet/core/aspnet:8.0 AS final
 WORKDIR /app
+EXPOSE 80
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "ShoppingCart.dll"]
