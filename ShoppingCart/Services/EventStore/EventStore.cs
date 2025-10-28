@@ -6,10 +6,8 @@ namespace Services
     public class EventStore : IEventStore
     {
         private List<Event> database = new();
-        public EventStore()
-        {
-            
-        }
+        public EventStore(){}
+
         public IEnumerable<Event> GetEvents(long firstEventSequenceNumber, long lastEventSequenceNumber)
         => database.Where(e => 
             e.SequenceNumber >= firstEventSequenceNumber &&
